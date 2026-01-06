@@ -159,6 +159,91 @@
             font-size: 0.95em;
         }
 
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .admin-content {
+            display: none;
+        }
+
+        .admin-content.show {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -188,6 +273,25 @@
     </style>
 </head>
 <body>
+    <!-- Login Form -->
+    <div id="loginContainer" class="login-container">
+        <h1 style="text-align: center; margin-bottom: 30px;">🔐 Admin Girişi</h1>
+        <div id="errorMessage" class="error-message"></div>
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label for="username">Kullanıcı Adı</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="login-btn" id="loginBtn">Giriş Yap</button>
+        </form>
+    </div>
+
+    <!-- Admin Panel Content -->
+    <div id="adminContent" class="admin-content">
     <div class="container">
         <h1>📊 Admin Panel</h1>
         <p class="subtitle">Kullanıcı Kayıtları</p>
@@ -221,8 +325,90 @@
             </table>
         </div>
     </div>
+    </div>
 
     <script>
+        let authToken = localStorage.getItem('adminToken');
+
+        // Sayfa yüklendiğinde token kontrolü
+        if (authToken) {
+            checkAuth();
+        } else {
+            showLogin();
+        }
+
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/records', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    showAdminPanel();
+                    loadRecords();
+                } else {
+                    localStorage.removeItem('adminToken');
+                    showLogin();
+                }
+            } catch (error) {
+                localStorage.removeItem('adminToken');
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('adminContent').classList.remove('show');
+        }
+
+        function showAdminPanel() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminContent').classList.add('show');
+        }
+
+        // Login form submit
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMessage = document.getElementById('errorMessage');
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Giriş yapılıyor...';
+            errorMessage.classList.remove('show');
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    authToken = data.token;
+                    localStorage.setItem('adminToken', authToken);
+                    showAdminPanel();
+                    loadRecords();
+                } else {
+                    errorMessage.textContent = data.error || 'Giriş başarısız!';
+                    errorMessage.classList.add('show');
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Bağlantı hatası!';
+                errorMessage.classList.add('show');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Giriş Yap';
+            }
+        });
+
         async function loadRecords() {
             const loading = document.getElementById('loading');
             const noData = document.getElementById('noData');
@@ -235,7 +421,18 @@
             table.style.display = 'none';
 
             try {
-                const response = await fetch('/api/records');
+                const response = await fetch('/api/records', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('adminToken');
+                    showLogin();
+                    return;
+                }
+
                 const records = await response.json();
 
                 loading.style.display = 'none';

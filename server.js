@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -54,6 +55,42 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
+// Basit session storage (production'da Redis veya database kullanılmalı)
+const activeSessions = new Map();
+
+// Admin authentication middleware
+function requireAdminAuth(req, res, next) {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  
+  if (token && activeSessions.has(token)) {
+    next();
+  } else {
+    res.status(401).json({ error: 'Yetkisiz erişim' });
+  }
+}
+
+// Admin login endpoint
+app.post('/api/admin/login', (req, res) => {
+  const { username, password } = req.body;
+  const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'canurek3';
+  
+  if (username === adminUsername && password === adminPassword) {
+    // Basit token oluştur
+    const token = Buffer.from(`${adminUsername}:${Date.now()}:${Math.random()}`).toString('base64');
+    activeSessions.set(token, { username: adminUsername, loginTime: Date.now() });
+    
+    // 24 saat sonra token'ı sil
+    setTimeout(() => {
+      activeSessions.delete(token);
+    }, 24 * 60 * 60 * 1000);
+    
+    res.json({ success: true, token: token });
+  } else {
+    res.status(401).json({ error: 'Kullanıcı adı veya şifre hatalı' });
+  }
+});
+
 // İsim kaydetme endpoint
 app.post('/api/submit', (req, res) => {
   const { name } = req.body;
@@ -94,8 +131,8 @@ app.post('/api/submit', (req, res) => {
   }
 });
 
-// Tüm kayıtları getir (admin panel için)
-app.get('/api/records', (req, res) => {
+// Tüm kayıtları getir (admin panel için) - Korumalı
+app.get('/api/records', requireAdminAuth, (req, res) => {
   try {
     if (!fs.existsSync(DATA_FILE)) {
       return res.json([]);
