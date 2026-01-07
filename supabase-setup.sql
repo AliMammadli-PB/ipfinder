@@ -1,7 +1,7 @@
 -- Supabase SQL Editor'da bu kodu çalıştırın
 
--- IPS tablosunu oluştur
-CREATE TABLE IF NOT EXISTS IPS (
+-- ips tablosunu oluştur
+CREATE TABLE IF NOT EXISTS public.ips (
   id BIGSERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   ip TEXT NOT NULL,
@@ -11,29 +11,29 @@ CREATE TABLE IF NOT EXISTS IPS (
 );
 
 -- İndeks ekle (performans için)
-CREATE INDEX IF NOT EXISTS idx_IPS_timestamp ON IPS(timestamp DESC);
-CREATE INDEX IF NOT EXISTS idx_IPS_id ON IPS(id DESC);
+CREATE INDEX IF NOT EXISTS idx_ips_timestamp ON public.ips(timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_ips_id ON public.ips(id DESC);
 
 -- Row Level Security (RLS) ayarları
-ALTER TABLE IPS ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ips ENABLE ROW LEVEL SECURITY;
 
 -- Public okuma izni (herkes görebilir - opsiyonel, güvenlik için kapatılabilir)
-CREATE POLICY "Allow public read access" ON IPS
+CREATE POLICY "Allow public read access" ON public.ips
   FOR SELECT
   USING (true);
 
 -- Public yazma izni (herkes ekleyebilir)
-CREATE POLICY "Allow public insert access" ON IPS
+CREATE POLICY "Allow public insert access" ON public.ips
   FOR INSERT
   WITH CHECK (true);
 
 -- Admin silme izni (opsiyonel)
-CREATE POLICY "Allow admin delete access" ON IPS
+CREATE POLICY "Allow admin delete access" ON public.ips
   FOR DELETE
   USING (true);
 
 -- Tablo yapısını kontrol et
 SELECT column_name, data_type, is_nullable 
 FROM information_schema.columns 
-WHERE table_name = 'IPS';
+WHERE table_name = 'ips' AND table_schema = 'public';
 

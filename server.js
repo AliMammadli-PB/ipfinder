@@ -28,7 +28,7 @@ app.use(express.static('public'));
 async function testSupabaseConnection() {
   try {
     const { data, error } = await supabase
-      .from('IPS')
+      .from('ips')
       .select('count')
       .limit(1);
     
@@ -125,7 +125,7 @@ app.post('/api/submit', async (req, res) => {
   try {
     // Supabase'e kaydet
     const { data, error } = await supabase
-      .from('IPS')
+      .from('ips')
       .insert([
         {
           name: name.trim(),
@@ -153,7 +153,7 @@ app.get('/api/records', requireAdminAuth, async (req, res) => {
   try {
     // Supabase'den kayıtları al
     const { data, error } = await supabase
-      .from('IPS')
+      .from('ips')
       .select('*')
       .order('id', { ascending: false });
 
