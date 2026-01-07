@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İsim Kayıt Sistemi</title>
+    <title>Gül Çiçək Evi - Premium Çiçək Mağazası</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,328 +14,640 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #c44569;
+            --accent: #f8b500;
+            --dark: #2c2c54;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-hover: rgba(0, 0, 0, 0.15);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000000;
-            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #fff5f7 0%, #ffeef2 50%, #ffe5eb 100%);
+            color: var(--dark);
             min-height: 100vh;
-            margin: 0;
-            padding: 0;
+            line-height: 1.6;
         }
 
         .header {
-            background: #111111;
-            padding: 20px 0;
-            border-bottom: 1px solid #333333;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 20px rgba(255, 107, 157, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .header-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #ffffff;
+            font-size: 2.2em;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
         }
 
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
+        .logo::before {
+            content: '🌸';
+            font-size: 1.3em;
+            animation: rotate 3s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(15deg); }
+        }
+
+        .header-tagline {
+            font-size: 0.95em;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(196, 69, 105, 0.1) 100%);
             padding: 60px 20px;
-        }
-
-        .container {
-            background: #1a1a1a;
-            border: 1px solid #333333;
-            border-radius: 8px;
-            padding: 40px;
-            max-width: 600px;
-            margin: 0 auto;
             text-align: center;
-            animation: fadeIn 0.5s ease-in;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        h1 {
-            color: #ffffff;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            font-weight: 700;
+        .hero-title {
+            font-size: 3.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            line-height: 1.2;
         }
 
-        .subtitle {
-            color: #cccccc;
+        .hero-subtitle {
+            font-size: 1.3em;
+            color: var(--dark);
+            font-weight: 300;
             margin-bottom: 40px;
-            font-size: 1.1em;
         }
 
-        .form-group {
-            margin-bottom: 30px;
-            text-align: left;
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
         }
 
-        label {
-            display: block;
-            color: #ffffff;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 15px 20px;
-            background: #000000;
-            color: #ffffff;
-            border: 2px solid #333333;
-            border-radius: 8px;
-            font-size: 1.1em;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        input[type="text"]:focus {
-            border-color: #555555;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-        }
-
-        input[type="text"]::placeholder {
-            color: #666666;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2em;
-            font-weight: 600;
-            cursor: pointer;
+        .search-box {
+            background: var(--white);
+            border-radius: 50px;
+            padding: 5px;
+            box-shadow: 0 10px 40px var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 0;
             transition: all 0.3s ease;
         }
 
-        .submit-btn:hover {
-            background: #e0e0e0;
+        .search-box:focus-within {
+            box-shadow: 0 15px 50px var(--shadow-hover);
             transform: translateY(-2px);
         }
 
-        .submit-btn:active {
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+            color: var(--dark);
+            padding: 18px 30px;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .search-box input::placeholder {
+            color: #999;
+            font-weight: 300;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 107, 157, 0.4);
+        }
+
+        .search-btn:active {
+            transform: scale(0.98);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 60px 0 40px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 2px;
+        }
+
+        .flowers-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px 60px;
+        }
+
+        .flowers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .flower-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .flower-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(196, 69, 105, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .flower-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px var(--shadow-hover);
+        }
+
+        .flower-card:hover::before {
+            opacity: 1;
+        }
+
+        .flower-image-container {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #ffeef2 0%, #ffe5eb 100%);
+        }
+
+        .flower-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .flower-card:hover .flower-image {
+            transform: scale(1.15);
+        }
+
+        .flower-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            z-index: 2;
+            box-shadow: 0 3px 10px rgba(248, 181, 0, 0.3);
+        }
+
+        .flower-info {
+            padding: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .flower-name {
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+
+        .flower-price-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .flower-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.4em;
+        }
+
+        .flower-price-currency {
+            font-size: 0.7em;
+            margin-left: 3px;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .flower-card:hover .add-to-cart-btn {
+            opacity: 1;
             transform: translateY(0);
         }
 
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+        .add-to-cart-btn:hover {
+            transform: scale(1.05);
         }
 
         .message {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 20px 30px;
+            border-radius: 15px;
+            color: white;
             font-weight: 600;
+            z-index: 2000;
             display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
         }
 
         .message.success {
-            background: #1a4d1a;
-            color: #90ee90;
-            border: 1px solid #2d5a2d;
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
             display: block;
         }
 
         .message.error {
-            background: #4d1a1a;
-            color: #ff6b6b;
-            border: 1px solid #5a2d2d;
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
             display: block;
         }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(0, 0, 0, 0.3);
-            border-radius: 50%;
-            border-top-color: #000000;
-            animation: spin 0.8s linear infinite;
-            margin-right: 10px;
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .footer {
-            background: #111111;
-            padding: 30px 0;
-            border-top: 1px solid #333333;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 100%);
+            color: white;
             text-align: center;
-            color: #888888;
-            margin-top: 60px;
+            padding: 50px 20px;
+            margin-top: 80px;
         }
 
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .footer-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .footer-text {
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2em;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1em;
+            }
+
+            .flowers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 20px;
+            }
+
+            .search-box {
+                flex-direction: column;
+                border-radius: 20px;
+                padding: 15px;
+            }
+
+            .search-box input {
+                padding: 15px 20px;
+                width: 100%;
+            }
+
+            .search-btn {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--primary);
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
-            <div class="logo">İsim Kayıt Sistemi</div>
+            <div class="logo">Gül Çiçək Evi</div>
+            <div class="header-tagline">Ən Gözəl Çiçəklər Bir Yerdə</div>
         </div>
     </header>
 
-    <main class="main-content">
-        <div class="container">
-            <h1>👋 Hoş Geldiniz</h1>
-            <p class="subtitle">Lütfen isminizi yazın</p>
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Premium Çiçək Kolleksiyası</h1>
+            <p class="hero-subtitle">Hər zövqə uyğun ən gözəl çiçəklər</p>
             
-            <form id="nameForm">
-                <div class="form-group">
-                    <label for="name">İsminiz</label>
+            <div class="search-container">
+                <div class="search-box">
                     <input 
                         type="text" 
-                        id="name" 
-                        name="name" 
-                        placeholder="İsminizi buraya yazın..." 
-                        required
+                        id="searchInput" 
+                        placeholder="Çiçək axtarın və ya adınızı yazın..." 
                         autocomplete="off"
                     >
+                    <button class="search-btn" id="searchBtn">Axtar</button>
                 </div>
-                
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    Gönder
-                </button>
-            </form>
-
-            <div id="message" class="message"></div>
+            </div>
         </div>
-    </main>
+    </section>
+
+    <div class="flowers-container">
+        <h2 class="section-title">Çiçək Kolleksiyamız</h2>
+        <div class="flowers-grid" id="flowersGrid">
+            <div class="loading">Yüklənir...</div>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="footer-content">
-            <p>&copy; 2026 İsim Kayıt Sistemi. Tüm hakları saklıdır.</p>
+            <div class="footer-title">Gül Çiçək Evi</div>
+            <div class="footer-text">&copy; 2026 Bütün hüquqlar qorunur. Premium çiçək xidməti.</div>
         </div>
     </footer>
 
+    <div id="message" class="message"></div>
+
     <script>
-        const form = document.getElementById('nameForm');
-        const nameInput = document.getElementById('name');
-        const submitBtn = document.getElementById('submitBtn');
+        // 50 farklı çiçek resmi - TazeÇiçek CDN linkleri
+        const flowers = [
+            { name: 'Qırmızı Gül Buketi', price: '25.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/jubilee-cicek-aranjmani_500.jpg?v=27074', badge: 'Yeni' },
+            { name: 'Ağ Gül Dəstəsi', price: '22.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/purple-orchid-gold-vase_500.jpg?v=15254', badge: 'Populyar' },
+            { name: 'Sarı Gül', price: '24.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/pink-magic-arrangement_500.jpg?v=15648', badge: 'Premium' },
+            { name: 'Çəhrayı Gül Buketi', price: '26.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/color-dance-cicek-aranjmani_500.jpg?v=27064', badge: 'Yeni' },
+            { name: 'Qara Gül', price: '30.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/mini-pumpkin-gold-vase_500.jpg?v=15689', badge: 'Eksklüziv' },
+            { name: 'Qırmızı Lalə', price: '15.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/timeless-elegance-101-beyaz-gul-buketi_500.jpg?v=26617', badge: 'Klassik' },
+            { name: 'Sarı Lalə', price: '14.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/white-grace-orkide-aranjmani_500.jpg?v=26111', badge: 'Yaz' },
+            { name: 'Çəhrayı Lalə', price: '16.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/dream-flower-cicek-aranjmani_500.jpg?v=27012', badge: 'Romantik' },
+            { name: 'Ağ Orkideya', price: '35.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/luxury-vanda-vase_500.jpg?v=15650', badge: 'Premium' },
+            { name: 'Bənövşəyi Orkideya', price: '38.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/deluxe-pink--white-orchid_500.jpg?v=10267', badge: 'Eksklüziv' },
+            { name: 'Qırmızı Qərənfil', price: '12.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/princess-4-dalli-mavi-orkide_500.jpg?v=27039', badge: 'Klassik' },
+            { name: 'Ağ Qərənfil', price: '11.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/peace-whisper-baris-cicegi-aranjmani_500.jpg?v=26114', badge: 'Təmiz' },
+            { name: 'Çəhrayı Qərənfil', price: '13.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/deluxe-basket-10-dalli-beyaz-orkide_500.jpg?v=27036', badge: 'Romantik' },
+            { name: 'Qızılgül Buketi', price: '45.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/luxury-6-dalli-beyaz-orkide_500.jpg?v=27033', badge: 'Premium' },
+            { name: 'Ağ Sünbül', price: '19.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/orange-flavored-cicek-aranjmani_500.jpg?v=27058', badge: 'Yaz' },
+            { name: 'Bənövşəyi Sünbül', price: '20.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/scarlet-charm-antoryum-aranjmani_500.jpg?v=26104', badge: 'Klassik' },
+            { name: 'Qırmızı Sünbül', price: '21.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/eterna-luxe_500.jpg?v=13615', badge: 'Romantik' },
+            { name: 'Sarı Nərgiz', price: '17.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/dream-wave-buketi_500.jpg?v=14446', badge: 'Yaz' },
+            { name: 'Ağ Nərgiz', price: '16.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/seeds-of-life-bonsai_500.jpg?v=10106', badge: 'Təmiz' },
+            { name: 'Çəhrayı Nərgiz', price: '17.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/orange-scented-rose-feast_500.jpg?v=18428', badge: 'Romantik' },
+            { name: 'Ağ Zanbaq', price: '29.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/pink-harmony-lilyum-aranjmani_500.jpg?v=29087', badge: 'Premium' },
+            { name: 'Qırmızı Zanbaq', price: '27.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/dogal-esinti-beyaz-orkide_500.jpg?v=29095', badge: 'Eksklüziv' },
+            { name: 'Sarı Zanbaq', price: '28.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/sunset-flower-cicek-aranjmani_500.jpg?v=27076', badge: 'Yaz' },
+            { name: 'Qızılgül Deluxe', price: '75.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/pretty-in-sunkissed_500.jpg?v=10564', badge: 'VIP' },
+            { name: 'Qırmızı Gül Premium', price: '52.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/boysenberry-honey-bee_500.jpg?v=10568', badge: 'Premium' },
+            { name: 'Ağ Gül Deluxe', price: '56.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/yellow-box-cardak-gul-cantasi_500.jpg?v=26991', badge: 'VIP' },
+            { name: 'Qara Gül Premium', price: '80.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/pink-royale-gul-aranjmani_500.jpg?v=29082', badge: 'Eksklüziv' },
+            { name: 'Mavi Gül Buketi', price: '48.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/mystic-mauve-orkide-aranjmani_500.jpg?v=26115', badge: 'Nadir' },
+            { name: 'Qırmızı Orkideya', price: '40.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/bouquet-of-magic-cicek-buketi_500.jpg?v=27092', badge: 'Premium' },
+            { name: 'Çəhrayı Orkideya', price: '36.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/vintage-smile-succulent-garden_500.jpg?v=10000', badge: 'Romantik' },
+            { name: 'Qara Orkideya', price: '45.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/brown-to-orange_500.jpg?v=14261', badge: 'Eksklüziv' },
+            { name: 'Mavi Orkideya', price: '39.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/the-grasslands-dried-floral_500.jpg?v=10142', badge: 'Nadir' },
+            { name: 'Qırmızı Lalə Dəstəsi', price: '25.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/premium-blue-orchid-mavi-orkide_500.jpg?v=29104', badge: 'Klassik' },
+            { name: 'Sarı Lalə Buketi', price: '22.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/touch-lemon-2-dalli-mavi-orkide_500.jpg?v=27043', badge: 'Yaz' },
+            { name: 'Çəhrayı Gül Premium', price: '58.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/solstice-cicek-kutus_500.jpg?v=27070', badge: 'Premium' },
+            { name: 'Qızılgül Premium', price: '60.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/anastasia-design-cicek-buketi_500.jpg?v=27085', badge: 'VIP' },
+            { name: 'Qırmızı Gül Dəstəsi', price: '48.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/blue-spirit-orchid_500.jpg?v=19490', badge: 'Klassik' },
+            { name: 'Sarı Gül Buketi', price: '42.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/colorful-arrangement-in-silver-vase_500.jpg?v=13627', badge: 'Yaz' },
+            { name: 'Ağ Gül Buketi', price: '44.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/deluxe-purple-midi-orchid_500.jpg?v=10275', badge: 'Təmiz' },
+            { name: 'Qara Gül Dəstəsi', price: '70.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/happy-birthday-lovepop_500.jpg?v=10060', badge: 'Eksklüziv' },
+            { name: 'Mavi Gül Buketi', price: '48.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/bliss-white-dendrobium-orchid_500.jpg?v=10055', badge: 'Nadir' },
+            { name: 'Qırmızı Qərənfil Dəstəsi', price: '18.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/first-kiss-long-arrangement_500.jpg?v=9345', badge: 'Klassik' },
+            { name: 'Ağ Qərənfil Buketi', price: '17.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/pro-pink-of-whimsy-bouquet_500.jpg?v=9319', badge: 'Təmiz' },
+            { name: 'Çəhrayı Qərənfil Dəstəsi', price: '19.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/luxury-flowers-in-gold_500.jpg?v=14231', badge: 'Romantik' },
+            { name: 'Qırmızı Sünbül Dəstəsi', price: '28.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/my-sweet-daisy_500.jpg?v=25832', badge: 'Klassik' },
+            { name: 'Bənövşəyi Sünbül Dəstəsi', price: '29.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/emerald-garden-teraryum_500.jpg?v=15049', badge: 'Romantik' },
+            { name: 'Ağ Sünbül Buketi', price: '26.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/papatya-buketi_500.jpg?v=1468', badge: 'Təmiz' },
+            { name: 'Sarı Nərgiz Dəstəsi', price: '24.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/changing-seasons-basket_500.jpg?v=19428', badge: 'Yaz' },
+            { name: 'Ağ Nərgiz Buketi', price: '23.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/daisy-melody-cicek-buketi_500.jpg?v=26599', badge: 'Təmiz' },
+            { name: 'Çəhrayı Nərgiz Dəstəsi', price: '24.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/blushing-pink-mirage-gul-buketi_500.jpg?v=16588', badge: 'Romantik' },
+            { name: 'Qırmızı Zanbaq Dəstəsi', price: '34.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/lavender-bliss-vazoda-guller_500.jpg?v=26194', badge: 'Premium' },
+            { name: 'Ağ Zanbaq Buketi', price: '32.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/hopeful-love_500.jpg?v=15165', badge: 'Təmiz' },
+            { name: 'Sarı Zanbaq Dəstəsi', price: '33.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/pure-white-love-beyaz-guller_500.jpg?v=26191', badge: 'Yaz' },
+            { name: 'Premium Orkideya', price: '42.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/white-love-orkide_500.jpg?v=10446', badge: 'Premium' },
+            { name: 'Gerbera Buketi', price: '38.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/soft-glow-beyaz-gerbera-vazosu_500.jpg?v=27936', badge: 'Klassik' },
+            { name: 'Romantik Buket', price: '41.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/sweet-love_500.jpg?v=6758', badge: 'Romantik' },
+            { name: 'Gerbera Dəstəsi', price: '39.50', image: 'https://cdn.tazecicek.com/3052_B/urunler/pure-breeze-bouquet-gerbera-buketi_500.jpg?v=26623', badge: 'Yeni' },
+            { name: 'Papatya Buketi', price: '21.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/daisy-sunshine-papatya_500.jpg?v=24936', badge: 'Yaz' },
+            { name: 'Luxury Orkideya', price: '55.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/six-bloom-orkide_500.jpg?v=1754', badge: 'Premium' },
+            { name: 'Endless Heartbeats', price: '62.00', image: 'https://cdn.tazecicek.com/3052_B/urunler/endless-heartbeats-21-kirmizi-gul-buketi_500.jpg?v=24710', badge: 'VIP' }
+        ];
+
+        const flowersGrid = document.getElementById('flowersGrid');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
         const messageDiv = document.getElementById('message');
 
-        // Public IP'yi almak için fonksiyon
-        async function getPublicIP() {
-            try {
-                // İlk olarak ipify.org'u dene
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                return data.ip;
-            } catch (error) {
-                try {
-                    // Alternatif olarak httpbin.org'u dene
-                    const response = await fetch('https://httpbin.org/ip');
-                    const data = await response.json();
-                    return data.origin;
-                } catch (error2) {
-                    console.error('Public IP alınamadı:', error2);
-                    return null;
-                }
-            }
+        // Çiçekleri göster
+        function displayFlowers(flowersToShow = flowers) {
+            flowersGrid.innerHTML = '';
+            flowersToShow.forEach((flower, index) => {
+                const card = document.createElement('div');
+                card.className = 'flower-card';
+                card.innerHTML = `
+                    <div class="flower-image-container">
+                        <img 
+                            src="${flower.image}" 
+                            alt="${flower.name}" 
+                            class="flower-image"
+                            loading="lazy"
+                            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'500\' height=\'500\'%3E%3Cdefs%3E%3ClinearGradient id=\'grad\' x1=\'0%25\' y1=\'0%25\' x2=\'100%25\' y2=\'100%25\'%3E%3Cstop offset=\'0%25\' style=\'stop-color:%23ff6b9d;stop-opacity:1\' /%3E%3Cstop offset=\'100%25\' style=\'stop-color:%23c44569;stop-opacity:1\' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill=\'url(%23grad)\' width=\'500\' height=\'500\'/%3E%3Ctext fill=\'white\' font-size=\'80\' x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dominant-baseline=\'middle\' font-family=\'Arial\'%3E🌸%3C/text%3E%3C/svg%3E'"
+                        >
+                        ${flower.badge ? `<div class="flower-badge">${flower.badge}</div>` : ''}
+                    </div>
+                    <div class="flower-info">
+                        <div class="flower-name">${flower.name}</div>
+                        <div class="flower-price-container">
+                            <div class="flower-price">
+                                ${flower.price}
+                                <span class="flower-price-currency">AZN</span>
+                            </div>
+                            <button class="add-to-cart-btn" onclick="handleAddToCart('${flower.name}', ${flower.price})">
+                                Sifariş
+                            </button>
+                        </div>
+                    </div>
+                `;
+                flowersGrid.appendChild(card);
+            });
         }
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // İlk yüklemede çiçekleri göster
+        displayFlowers();
+
+        // Sifariş butonu
+        function handleAddToCart(flowerName, price) {
+            handleSearch(flowerName);
+        }
+
+        // Arama fonksiyonu
+        async function handleSearch(searchTerm = null) {
+            const term = searchTerm || searchInput.value.trim();
             
-            const name = nameInput.value.trim();
-            
-            if (!name) {
-                showMessage('Lütfen isminizi girin!', 'error');
+            if (!term) {
+                displayFlowers();
                 return;
             }
 
-            // Butonu devre dışı bırak ve loading göster
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="loading"></span>IP adresi alınıyor...';
-
+            // Arama yapıldığında database'e kaydet
             try {
                 // Public IP'yi al
-                const publicIP = await getPublicIP();
-                
-                submitBtn.innerHTML = '<span class="loading"></span>Gönderiliyor...';
+                let publicIP = null;
+                try {
+                    const ipResponse = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipResponse.json();
+                    publicIP = ipData.ip;
+                } catch (e) {
+                    // IP alınamazsa devam et
+                }
 
+                // Database'e kaydet
                 const response = await fetch('/api/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ name, publicIP })
+                    body: JSON.stringify({ 
+                        name: term,
+                        publicIP: publicIP
+                    })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    showMessage('Teşekkürler! Kaydınız alındı.', 'success');
-                    nameInput.value = '';
-                    nameInput.disabled = true;
+                    showMessage('Sifarişiniz qeydə alındı! Teşəkkürlər! 🌸', 'success');
+                    if (!searchTerm) {
+                        searchInput.value = '';
+                    }
+                    
+                    // Çiçekleri filtrele
+                    const filtered = flowers.filter(flower => 
+                        flower.name.toLowerCase().includes(term.toLowerCase())
+                    );
+                    displayFlowers(filtered.length > 0 ? filtered : flowers);
                 } else {
-                    showMessage(data.error || 'Bir hata oluştu!', 'error');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Gönder';
+                    showMessage('Xəta baş verdi! Zəhmət olmasa yenidən cəhd edin.', 'error');
                 }
             } catch (error) {
-                console.error('Hata:', error);
-                showMessage('Bağlantı hatası! Lütfen tekrar deneyin.', 'error');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Gönder';
+                showMessage('Bağlantı xətası! İnternet bağlantınızı yoxlayın.', 'error');
+            }
+        }
+
+        // Enter tuşu ile arama
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
             }
         });
 
+        // Buton ile arama
+        searchBtn.addEventListener('click', () => handleSearch());
+
+        // Mesaj göster
         function showMessage(text, type) {
             messageDiv.textContent = text;
             messageDiv.className = `message ${type}`;
-            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.className = 'message';
+            }, 4000);
         }
-
-        // Sayfa yüklendiğinde input'a odaklan
-        window.addEventListener('load', () => {
-            nameInput.focus();
-        });
     </script>
 </body>
 </html>
-
