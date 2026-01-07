@@ -54,7 +54,22 @@ Admin paneline erişmek için:
 
 ## Veri Depolama
 
-Kayıtlar JSON dosyasında (`data.json`) saklanır. Vercel uyumlu olacak şekilde yapılandırılmıştır.
+Kayıtlar **Supabase** veritabanında saklanır. Kalıcı ve güvenilir veri saklama için Supabase kullanılmaktadır.
+
+### Supabase Kurulumu
+
+1. Supabase Dashboard → SQL Editor'a gidin
+2. `supabase-setup.sql` dosyasındaki SQL kodunu çalıştırın
+3. Tablo otomatik olarak oluşturulacak
+
+### Environment Variables
+
+`.env` dosyanıza şunları ekleyin:
+```
+SUPABASE_URL=your_supabase_url
+ANON_PUBLIC=your_anon_key
+JWT_SECRET=your_jwt_secret
+```
 
 ## Vercel Deployment
 

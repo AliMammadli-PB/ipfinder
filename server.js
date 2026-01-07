@@ -2,30 +2,48 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-// Vercel'de /tmp dizinine yazma izni var, local'de data.json kullan
-const DATA_FILE = process.env.VERCEL 
-  ? path.join('/tmp', 'data.json')
-  : path.join(__dirname, 'data.json');
+
+// Supabase client oluştur
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.ANON_PUBLIC;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('HATA: SUPABASE_URL ve ANON_PUBLIC environment variable\'ları gerekli!');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// Veritabanı dosyasını oluştur (yoksa)
-function initDatabase() {
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
+// Supabase bağlantısını test et
+async function testSupabaseConnection() {
+  try {
+    const { data, error } = await supabase
+      .from('IPS')
+      .select('count')
+      .limit(1);
+    
+    if (error) {
+      console.error('Supabase bağlantı hatası:', error.message);
+      console.error('Lütfen supabase-setup.sql dosyasındaki SQL kodunu Supabase SQL Editor\'da çalıştırın!');
+    } else {
+      console.log('✓ Supabase bağlantısı başarılı!');
+    }
+  } catch (error) {
+    console.error('Supabase test hatası:', error);
   }
 }
 
-// Veritabanını başlat
-initDatabase();
+testSupabaseConnection();
 
 // Azerbaycan saati (UTC+4)
 function getAzerbaijanTime() {
@@ -92,7 +110,7 @@ app.post('/api/admin/login', (req, res) => {
 });
 
 // İsim kaydetme endpoint
-app.post('/api/submit', (req, res) => {
+app.post('/api/submit', async (req, res) => {
   const { name, publicIP } = req.body;
   
   if (!name || name.trim() === '') {
@@ -104,28 +122,26 @@ app.post('/api/submit', (req, res) => {
   const azerbaijanTime = getAzerbaijanTime();
   const timestamp = new Date().toISOString();
 
-  const newEntry = {
-    id: Date.now(),
-    name: name.trim(),
-    ip: ip,
-    time: azerbaijanTime,
-    timestamp: timestamp
-  };
-
   try {
-    // Mevcut verileri oku
-    let data = [];
-    if (fs.existsSync(DATA_FILE)) {
-      const fileContent = fs.readFileSync(DATA_FILE, 'utf8');
-      data = JSON.parse(fileContent);
+    // Supabase'e kaydet
+    const { data, error } = await supabase
+      .from('IPS')
+      .insert([
+        {
+          name: name.trim(),
+          ip: ip,
+          time: azerbaijanTime,
+          timestamp: timestamp
+        }
+      ])
+      .select();
+
+    if (error) {
+      console.error('Supabase kayıt hatası:', error);
+      return res.status(500).json({ error: 'Kayıt sırasında hata oluştu: ' + error.message });
     }
 
-    // Yeni kaydı ekle
-    data.push(newEntry);
-
-    // Dosyaya yaz
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-    res.json({ success: true, message: 'Kayıt başarıyla eklendi' });
+    res.json({ success: true, message: 'Kayıt başarıyla eklendi', data: data[0] });
   } catch (error) {
     console.error('Veri yazma hatası:', error);
     res.status(500).json({ error: 'Kayıt sırasında hata oluştu' });
@@ -133,22 +149,32 @@ app.post('/api/submit', (req, res) => {
 });
 
 // Tüm kayıtları getir (admin panel için) - Korumalı
-app.get('/api/records', requireAdminAuth, (req, res) => {
+app.get('/api/records', requireAdminAuth, async (req, res) => {
   try {
-    if (!fs.existsSync(DATA_FILE)) {
-      return res.json([]);
-    }
+    // Supabase'den kayıtları al
+    const { data, error } = await supabase
+      .from('IPS')
+      .select('*')
+      .order('id', { ascending: false });
 
-    const fileContent = fs.readFileSync(DATA_FILE, 'utf8');
-    const data = JSON.parse(fileContent);
+    if (error) {
+      console.error('Supabase okuma hatası:', error);
+      return res.status(500).json({ error: 'Veri okuma hatası: ' + error.message });
+    }
     
-    // En yeni kayıtlar önce gelsin
-    const sortedData = data.sort((a, b) => b.id - a.id);
+    // Supabase'den gelen verileri formatla
+    const formattedData = data.map(record => ({
+      id: record.id,
+      name: record.name,
+      ip: record.ip,
+      time: record.time,
+      timestamp: record.timestamp
+    }));
     
-    res.json(sortedData);
+    res.json(formattedData || []);
   } catch (error) {
     console.error('Veri okuma hatası:', error);
-    res.json([]);
+    res.status(500).json({ error: 'Veri okuma hatası' });
   }
 });
 
