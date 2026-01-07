@@ -248,24 +248,56 @@ app.post('/api/submit', async (req, res) => {
 // Tüm kayıtları getir (admin panel için) - Korumalı
 app.get('/api/records', requireAdminAuth, async (req, res) => {
   try {
-    console.log('[/api/records] İstek alındı');
+    console.log('\n========================================');
+    console.log('📥 [/api/records] İstek Alındı');
+    console.log('========================================');
+    console.log('   - Timestamp:', new Date().toISOString());
+    console.log('   - IP:', req.ip || req.connection.remoteAddress);
+    console.log('   - User-Agent:', req.headers['user-agent']);
+    
+    console.log('\n🔍 Supabase Sorgusu Başlatılıyor...');
+    console.log('   - Tablo: ips');
+    console.log('   - Sıralama: id DESC');
+    
+    const queryStartTime = Date.now();
     
     // Supabase'den kayıtları al
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('ips')
-      .select('*')
+      .select('*', { count: 'exact' })
       .order('id', { ascending: false });
 
+    const queryEndTime = Date.now();
+    const queryDuration = queryEndTime - queryStartTime;
+
     if (error) {
-      console.error('[/api/records] Supabase okuma hatası:', error);
-      console.error('[/api/records] Hata detayları:', JSON.stringify(error, null, 2));
+      console.error('\n❌ [/api/records] Supabase Okuma Hatası!');
+      console.error('   - Hata Mesajı:', error.message);
+      console.error('   - Hata Kodu:', error.code || 'N/A');
+      console.error('   - Hata Detayı:', error.details || 'N/A');
+      console.error('   - Hata İpucu:', error.hint || 'N/A');
+      console.error('   - Tam Hata Objesi:', JSON.stringify(error, null, 2));
+      console.log('========================================\n');
+      
       return res.status(500).json({ 
         error: 'Veri okuma hatası: ' + error.message,
         details: error 
       });
     }
     
-    console.log('[/api/records] Kayıt sayısı:', data ? data.length : 0);
+    console.log('\n✅ Supabase Sorgusu Başarılı!');
+    console.log('   - Sorgu Süresi:', queryDuration + 'ms');
+    console.log('   - Toplam Kayıt (count):', count);
+    console.log('   - Dönen Kayıt Sayısı:', data ? data.length : 0);
+    
+    if (data && data.length > 0) {
+      console.log('\n📋 Kayıt Detayları:');
+      data.forEach((record, index) => {
+        console.log(`   ${index + 1}. ID: ${record.id}, Name: ${record.name}, IP: ${record.ip}, Time: ${record.time}`);
+      });
+    } else {
+      console.log('   ⚠️ Hiç kayıt bulunamadı');
+    }
     
     // Supabase'den gelen verileri formatla
     const formattedData = (data || []).map(record => ({
@@ -276,10 +308,19 @@ app.get('/api/records', requireAdminAuth, async (req, res) => {
       timestamp: record.timestamp
     }));
     
+    console.log('\n📤 Yanıt Hazırlanıyor...');
+    console.log('   - Formatlanmış Kayıt Sayısı:', formattedData.length);
+    console.log('========================================\n');
+    
     res.json(formattedData);
   } catch (error) {
-    console.error('[/api/records] Genel hata:', error);
-    console.error('[/api/records] Hata stack:', error.stack);
+    console.error('\n❌ [/api/records] Genel Hata!');
+    console.error('   - Hata Mesajı:', error.message);
+    console.error('   - Hata Tipi:', error.name);
+    console.error('   - Stack Trace:', error.stack);
+    console.error('   - Tam Hata Objesi:', error);
+    console.log('========================================\n');
+    
     res.status(500).json({ 
       error: 'Veri okuma hatası',
       message: error.message 

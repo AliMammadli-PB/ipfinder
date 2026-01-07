@@ -328,42 +328,65 @@
     </div>
 
     <script>
+        console.log('\n========================================');
+        console.log('🚀 Admin Panel Sayfası Yüklendi');
+        console.log('========================================');
+        console.log('   - URL:', window.location.href);
+        console.log('   - Timestamp:', new Date().toISOString());
+        
         let authToken = localStorage.getItem('adminToken');
+        console.log('   - localStorage Token:', authToken ? `Mevcut (${authToken.substring(0, 20)}...)` : 'Yok');
 
         // Sayfa yüklendiğinde token kontrolü
         if (authToken) {
+            console.log('   → Token bulundu, doğrulama yapılıyor...');
             checkAuth();
         } else {
+            console.log('   → Token bulunamadı, login ekranı gösteriliyor...');
             showLogin();
         }
 
         async function checkAuth() {
+            console.log('\n========================================');
+            console.log('🔐 checkAuth() Fonksiyonu Çağrıldı');
+            console.log('========================================');
+            console.log('   - Token:', authToken ? `Mevcut (${authToken.substring(0, 20)}...)` : 'Eksik');
+            
             try {
+                console.log('🌐 Token doğrulama isteği gönderiliyor...');
                 const response = await fetch('/api/records', {
                     headers: {
                         'Authorization': `Bearer ${authToken}`
                     }
                 });
 
+                console.log('📥 Yanıt alındı:', response.status, response.statusText);
+
                 if (response.ok) {
+                    console.log('✅ Token geçerli, admin panel gösteriliyor');
                     showAdminPanel();
                     loadRecords();
                 } else {
+                    console.error('❌ Token geçersiz, login ekranı gösteriliyor');
                     localStorage.removeItem('adminToken');
                     showLogin();
                 }
             } catch (error) {
+                console.error('❌ checkAuth() hatası:', error);
                 localStorage.removeItem('adminToken');
                 showLogin();
             }
+            console.log('========================================\n');
         }
 
         function showLogin() {
+            console.log('🔓 showLogin() çağrıldı - Login ekranı gösteriliyor');
             document.getElementById('loginContainer').style.display = 'block';
             document.getElementById('adminContent').classList.remove('show');
         }
 
         function showAdminPanel() {
+            console.log('🔓 showAdminPanel() çağrıldı - Admin panel gösteriliyor');
             document.getElementById('loginContainer').style.display = 'none';
             document.getElementById('adminContent').classList.add('show');
         }
@@ -371,16 +394,25 @@
         // Login form submit
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('\n========================================');
+            console.log('🔑 Login Form Submit');
+            console.log('========================================');
+            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const loginBtn = document.getElementById('loginBtn');
             const errorMessage = document.getElementById('errorMessage');
+
+            console.log('📝 Form Verileri:');
+            console.log('   - Username:', username);
+            console.log('   - Password:', password ? '***' : 'Boş');
 
             loginBtn.disabled = true;
             loginBtn.textContent = 'Giriş yapılıyor...';
             errorMessage.classList.remove('show');
 
             try {
+                console.log('\n🌐 Login API isteği gönderiliyor...');
                 const response = await fetch('/api/admin/login', {
                     method: 'POST',
                     headers: {
@@ -389,50 +421,82 @@
                     body: JSON.stringify({ username, password })
                 });
 
+                console.log('📥 Yanıt alındı:', response.status, response.statusText);
                 const data = await response.json();
+                console.log('📦 Response Data:', data);
 
                 if (response.ok && data.success) {
+                    console.log('✅ Login başarılı!');
                     authToken = data.token;
+                    console.log('   - Token alındı:', authToken.substring(0, 20) + '...');
                     localStorage.setItem('adminToken', authToken);
+                    console.log('   - Token localStorage\'a kaydedildi');
                     showAdminPanel();
                     loadRecords();
                 } else {
+                    console.error('❌ Login başarısız:', data.error);
                     errorMessage.textContent = data.error || 'Giriş başarısız!';
                     errorMessage.classList.add('show');
                 }
             } catch (error) {
+                console.error('❌ Login hatası:', error);
                 errorMessage.textContent = 'Bağlantı hatası!';
                 errorMessage.classList.add('show');
             } finally {
                 loginBtn.disabled = false;
                 loginBtn.textContent = 'Giriş Yap';
             }
+            console.log('========================================\n');
         });
 
         async function loadRecords() {
+            console.log('\n========================================');
+            console.log('📊 loadRecords() Fonksiyonu Çağrıldı');
+            console.log('========================================');
+            
             const loading = document.getElementById('loading');
             const noData = document.getElementById('noData');
             const table = document.getElementById('recordsTable');
             const recordsBody = document.getElementById('recordsBody');
             const totalCount = document.getElementById('totalCount');
 
+            console.log('🔍 DOM Elementleri:');
+            console.log('   - loading:', loading ? '✓ Bulundu' : '✗ Bulunamadı');
+            console.log('   - noData:', noData ? '✓ Bulundu' : '✗ Bulunamadı');
+            console.log('   - table:', table ? '✓ Bulundu' : '✗ Bulunamadı');
+            console.log('   - recordsBody:', recordsBody ? '✓ Bulundu' : '✗ Bulunamadı');
+            console.log('   - totalCount:', totalCount ? '✓ Bulundu' : '✗ Bulunamadı');
+
             loading.style.display = 'block';
             noData.style.display = 'none';
             table.style.display = 'none';
 
+            console.log('🔐 Token Kontrolü:');
+            console.log('   - authToken:', authToken ? `✓ Mevcut (${authToken.substring(0, 20)}...)` : '✗ Eksik');
+
             try {
-                console.log('loadRecords çağrıldı, token:', authToken ? 'Mevcut' : 'Eksik');
+                console.log('\n🌐 API İsteği Gönderiliyor...');
+                console.log('   - URL: /api/records');
+                console.log('   - Method: GET');
+                console.log('   - Headers: Authorization: Bearer ' + (authToken ? authToken.substring(0, 20) + '...' : 'YOK'));
                 
+                const startTime = Date.now();
                 const response = await fetch('/api/records', {
                     headers: {
                         'Authorization': `Bearer ${authToken}`
                     }
                 });
+                const endTime = Date.now();
+                const duration = endTime - startTime;
 
-                console.log('API yanıtı:', response.status, response.statusText);
+                console.log('\n📥 API Yanıtı Alındı:');
+                console.log('   - Status:', response.status, response.statusText);
+                console.log('   - Duration:', duration + 'ms');
+                console.log('   - OK:', response.ok);
+                console.log('   - Headers:', Object.fromEntries(response.headers.entries()));
 
                 if (response.status === 401) {
-                    console.log('401 hatası - Token geçersiz');
+                    console.error('\n❌ 401 Unauthorized - Token geçersiz veya süresi dolmuş');
                     localStorage.removeItem('adminToken');
                     authToken = null;
                     showLogin();
@@ -441,28 +505,55 @@
 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.error('API hatası:', response.status, errorText);
+                    console.error('\n❌ API Hatası:');
+                    console.error('   - Status:', response.status);
+                    console.error('   - StatusText:', response.statusText);
+                    console.error('   - Error Body:', errorText);
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
+                console.log('\n📦 JSON Parse Ediliyor...');
                 const records = await response.json();
-                console.log('Kayıtlar alındı:', records);
+                console.log('✅ JSON Parse Başarılı');
+                console.log('   - Veri Tipi:', typeof records);
+                console.log('   - Array mi?', Array.isArray(records));
+                console.log('   - Kayıt Sayısı:', records ? records.length : 0);
+                console.log('   - Tüm Kayıtlar:', records);
 
                 if (!Array.isArray(records)) {
-                    console.error('Beklenmeyen veri formatı:', typeof records, records);
-                    throw new Error('Beklenmeyen veri formatı');
+                    console.error('\n❌ Beklenmeyen Veri Formatı:');
+                    console.error('   - Beklenen: Array');
+                    console.error('   - Gelen:', typeof records);
+                    console.error('   - Değer:', records);
+                    throw new Error('Beklenmeyen veri formatı - Array bekleniyordu');
                 }
 
+                console.log('\n🎨 UI Güncelleniyor...');
                 loading.style.display = 'none';
                 totalCount.textContent = records.length;
+                console.log('   - Toplam kayıt sayısı güncellendi:', records.length);
 
                 if (records.length === 0) {
+                    console.log('\n⚠️ Kayıt Bulunamadı');
+                    console.log('   - noData elementi gösteriliyor');
                     noData.style.display = 'block';
+                    console.log('========================================\n');
                     return;
                 }
 
+                console.log('\n📋 Tablo Oluşturuluyor...');
                 recordsBody.innerHTML = '';
+                console.log('   - recordsBody temizlendi');
+                
                 records.forEach((record, index) => {
+                    console.log(`   - Kayıt ${index + 1}:`, {
+                        id: record.id,
+                        name: record.name,
+                        ip: record.ip,
+                        time: record.time,
+                        timestamp: record.timestamp
+                    });
+                    
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${index + 1}</td>
@@ -473,10 +564,20 @@
                     recordsBody.appendChild(row);
                 });
 
+                console.log(`   - ${records.length} satır tabloya eklendi`);
                 table.style.display = 'table';
+                console.log('   - Tablo gösterildi');
+                
+                console.log('\n✅ loadRecords() Başarıyla Tamamlandı!');
+                console.log('========================================\n');
             } catch (error) {
-                console.error('loadRecords hatası:', error);
-                console.error('Hata detayları:', error.message, error.stack);
+                console.error('\n❌ loadRecords() Hatası:');
+                console.error('   - Hata Mesajı:', error.message);
+                console.error('   - Hata Tipi:', error.name);
+                console.error('   - Stack Trace:', error.stack);
+                console.error('   - Tam Hata Objesi:', error);
+                console.log('========================================\n');
+                
                 loading.style.display = 'none';
                 loading.textContent = 'Veri yüklenirken hata oluştu: ' + error.message;
                 loading.style.color = '#d32f2f';
@@ -499,17 +600,23 @@
         let refreshInterval = null;
 
         function startAutoRefresh() {
+            console.log('🔄 Otomatik yenileme başlatılıyor (5 saniye aralıkla)');
             if (refreshInterval) {
                 clearInterval(refreshInterval);
             }
             refreshInterval = setInterval(() => {
                 if (authToken) {
+                    console.log('🔄 Otomatik yenileme tetiklendi');
                     loadRecords();
+                } else {
+                    console.log('⚠️ Otomatik yenileme durduruldu - Token yok');
+                    stopAutoRefresh();
                 }
             }, 5000);
         }
 
         function stopAutoRefresh() {
+            console.log('⏸️ Otomatik yenileme durduruluyor');
             if (refreshInterval) {
                 clearInterval(refreshInterval);
                 refreshInterval = null;
